@@ -20,6 +20,7 @@ import { handleRegister } from "./ApiHandle";
 
 const RegisterScreen = ({ navigation }) => {
   const [isChecked, setChecked] = useState(false);
+  const [showPassword, setShowPassword] = useState(true);
   const [userDetails, setUserDetails] = useState({
     name: "",
     phone: "",
@@ -30,16 +31,16 @@ const RegisterScreen = ({ navigation }) => {
     if (
       userDetails?.name?.length == 0 ||
       userDetails?.phone?.length == 0 ||
-      userDetails?.password?.length == 0
+      userDetails?.password?.length == 0 ||
+      !isChecked
     ) {
       Alert.alert("warning!", "all the fields are required");
     } else {
       const res = await handleRegister(userDetails);
-      console.log(res);
       if (res.status) {
         navigation.navigate("HomeScreen", userDetails);
       } else {
-        Alert.alert("warning!", res?.error?.phone[0]);
+        Alert.alert("Error!", res?.error?.phone[0]);
       }
     }
   };
@@ -104,9 +105,14 @@ const RegisterScreen = ({ navigation }) => {
                 style={styles.input}
                 placeholder="password"
                 keyboardType="text"
-                secureTextEntry
+                secureTextEntry={showPassword ? true : false}
               />
-              <Feather name="eye" size={wp(5)} color="gray" />
+              <Feather
+                name={showPassword ? "eye-off" : "eye"}
+                size={wp(5)}
+                color="gray"
+                onPress={() => setShowPassword(!showPassword)}
+              />
             </View>
           </View>
         </View>

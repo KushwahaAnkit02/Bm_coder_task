@@ -19,16 +19,20 @@ import {
 import { handleLigin } from "./ApiHandle";
 
 const LoginScreen = ({ navigation }) => {
+  const [showPassword, setShowPassword] = useState(true);
+
   const [details, setDetails] = useState({
     phone: "",
     password: "",
   });
 
   const handleSignIn = async () => {
-    if (details?.phone.length !== 0 || details?.password.length !== 0) {
+    if (details?.phone.length !== 0 && details?.password.length !== 0) {
       const res = await handleLigin(details);
       if (res.status) {
         navigation.replace("HomeScreen", res?.data);
+      } else {
+        Alert.alert("Error!", res?.message);
       }
     } else {
       Alert.alert("warning", "all the fields are required");
@@ -80,9 +84,14 @@ const LoginScreen = ({ navigation }) => {
                 style={styles.input}
                 placeholder="password"
                 keyboardType="text"
-                secureTextEntry
+                secureTextEntry={showPassword ? true : false}
               />
-              <Feather name="eye" size={wp(5)} color="gray" />
+              <Feather
+                name={showPassword ? "eye-off" : "eye"}
+                size={wp(5)}
+                color="gray"
+                onPress={() => setShowPassword(!showPassword)}
+              />
             </View>
           </View>
           <Text style={styles.forgotPasswordText}>Forgot password?</Text>
